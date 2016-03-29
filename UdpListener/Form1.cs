@@ -7,8 +7,8 @@ namespace UdpServer
 {
     public partial class Form1 : Form
     {
-        private Thread UdpListenerThread;
         private System.Timers.Timer server_log_refresh_timer;
+        private UDPListener updServer;
 
         public Form1()
         {
@@ -43,20 +43,34 @@ namespace UdpServer
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (UdpListenerThread != null && UdpListenerThread.IsAlive)
+            int listenPort;
+            bool isNumeric = int.TryParse(ListeningPort.Text, out listenPort);
+            if (!isNumeric)
+            {
+                MessageBox.Show("Please enter Port");
+                return;
+            }
+
+            if (ListeningIP.Text == "")
+            {
+                MessageBox.Show("Please enter IP");
+                return;
+            }
+
+            if (updServer == null)
+            {
+                updServer = new UDPListener();
+                updServer.Start(ListeningIP.Text, Convert.ToInt32(listenPort));
+
+                Button btn = (Button)sender;
+                btn.Text = "Stop Server";
+            }
+            else
             {
                 StopListening();
 
                 Button btn = (Button)sender;
                 btn.Text = "Start Server";
-            }
-            else
-            {
-                UDPListener.Start();
-                UdpListenerThread = new Thread(new ThreadStart(UDPListener.Run));
-                UdpListenerThread.Start();
-                Button btn = (Button)sender;
-                btn.Text = "Stop Server";
             }
         }
 
@@ -64,20 +78,24 @@ namespace UdpServer
         {
             Thread.Sleep(1);
 
-            UDPListener.Close();
+            updServer.Close();
 
-            UdpListenerThread.Join();
+            updServer = null;
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (UdpListenerThread.IsAlive)
-            {
-                StopListening();
-            }
-
+            server_log_refresh_timer.Enabled = false;
             server_log_refresh_timer.Stop();
             server_log_refresh_timer.Dispose();
+
+            if (updServer != null)
+            {
+                if (updServer.IsAlive())
+                {
+                    StopListening();
+                }
+            }
         }
     }
 }

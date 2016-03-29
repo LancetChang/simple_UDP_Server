@@ -7,8 +7,8 @@
     <ProjectGuid>{C11D1A58-D091-4DAC-AF5E-E5E92F38AAC8}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UdpServer</RootNamespace>
-    <AssemblyName>UdpServer</AssemblyName>
+    <RootNamespace>UdpListener</RootNamespace>
+    <AssemblyName>UdpListener</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
